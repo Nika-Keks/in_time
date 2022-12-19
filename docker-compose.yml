@@ -1,0 +1,32 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: postgres:14-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: qwer
+      POSTGRES_DB: intime
+    networks:
+      - itp
+    volumes:
+      - ./pgdatabase:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - itp
+
+networks:
+  itp:
+    driver: bridge
+
+volumes:
+  db: {}
