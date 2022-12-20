@@ -1,3 +1,4 @@
+-- Active: 1671262384862@@127.0.0.1@5432@intime
 
 CREATE TABLE IF NOT EXISTS restaurants
 (
@@ -6,6 +7,7 @@ CREATE TABLE IF NOT EXISTS restaurants
     position TEXT,
     description TEXT,
     phone TEXT,
+    password TEXT,
     wday_opening TIME,
     wday_closing TIME,
     wend_opening TIME,
@@ -32,6 +34,7 @@ CREATE TABLE IF NOT EXISTS clients
 (
     id INTEGER GENERATED ALWAYS AS IDENTITY,
     phone TEXT,
+    password TEXT,
     name TEXT,
 
     PRIMARY KEY (id)
