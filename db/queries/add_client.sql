@@ -1,5 +1,5 @@
 INSERT INTO clients
-(phone, name)
+(phone, name, password)
 VALUES
-('{phone}', '{name}')
+('{phone}', '{name}', '{password}')
 RETURNING id;
