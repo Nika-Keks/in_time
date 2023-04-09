@@ -24,6 +24,21 @@ services:
     networks:
       - itp
 
+  backend:
+    build:
+      context: backend/
+      dockerfile: ./.dockerfile
+    ports:
+      - 5000:5000
+    networks:
+      - itp
+    depends_on:
+      - db
+    environment:
+      ITP_DB_URI: postgresql://db
+      ITP_DB: intime
+      ITP_SECRET_KEY: superkey
+
 networks:
   itp:
     driver: bridge

@@ -1,0 +1,6 @@
+flask
+flask_login
+flask_sqlalchemy
+flask-migrate
+psycopg2-binary
+flask_restx
