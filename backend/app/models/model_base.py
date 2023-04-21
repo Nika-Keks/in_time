@@ -1,12 +1,16 @@
 import datetime
 
-from sqlalchemy import Integer, DateTime
+from sqlalchemy import DateTime
 
 from app import db
+from app.utils.mixins import CustomSerializerMixin
 
 
-class ModelBase(db.Model):
+class ModelBase(db.Model, CustomSerializerMixin):
     __abstract__ = True
+
+    serialize_only = ('create_time', 'update_time')
+
     create_time = db.Column(DateTime, nullable=False, default=datetime.datetime.utcnow())
     update_time = db.Column(DateTime, nullable=False, default=datetime.datetime.utcnow())
 

@@ -7,8 +7,9 @@ from flask_restx.inputs import time
 
 from app import api
 from app.models.restaurant import Restaurant
-from app.utils.exceptions import ITPUpdateError, ITPForbiddenError
+from app.utils.exceptions import ITPInvalidError, ITPForbiddenError, ok
 
+ns = api.namespace('Restaurant', description='Operations with existed restaurants')
 
 update_args = reqparse.RequestParser()
 default_open = datetime.time(9, 0, 0).isoformat()
@@ -26,35 +27,38 @@ update_args.add_argument('wend_closing', type=time, help='New restaurant weekend
                          default=default_close)
 
 
-@api.route('/restaurants/<int:rest_id>')
+@ns.route('/restaurants/<int:rest_id>')
 class RestaurantById(Resource):
     def get(self, rest_id):
         if not current_user.is_authenticated or current_user.is_anonymous:
             raise ITPForbiddenError()
 
-        return Restaurant.query.filter_by(id=rest_id).first_or_404()
+        return Restaurant.query.filter_by(id=rest_id).first_or_404(
+            f"Restaurant with id {rest_id} was not found").to_dict(), ok
 
-    @api.expect(update_args)
+    @ns.expect(update_args)
     def put(self, rest_id):
         if not current_user.is_authenticated or current_user.is_anonymous or\
                 Restaurant.query.filter_by(user_id=current_user.id).first() is None:
             raise ITPForbiddenError()
 
-        restaurant = Restaurant.query.filter_by(user_id=current_user.id, id=rest_id).first_or_404()
+        restaurant = Restaurant.query.filter_by(user_id=current_user.id, id=rest_id).first_or_404(
+            f"Restaurant with id {rest_id} for user {current_user.id} was not found")
         try:
-            restaurant.validate_update(**request.args)
+            Restaurant.validate_update(rest_id, **request.args)
         except ValueError:
-            raise ITPUpdateError()
+            raise ITPInvalidError()
 
-        restaurant.update(**request.args)
-        return restaurant
+        Restaurant.update(rest_id, **request.args)
+        return restaurant.to_dict(), ok
 
 
 # TODO: add filtering
-@api.route('/restaurants/')
+@ns.route('/restaurants/')
 class Restaurants(Resource):
     def get(self):
         if not current_user.is_authenticated or current_user.is_anonymous:
             raise ITPForbiddenError()
 
-        return Restaurant.query.all()
+        data = Restaurant.query.all()
+        return {"count": len(data), "items": [d.to_dict() for d in data]}, ok

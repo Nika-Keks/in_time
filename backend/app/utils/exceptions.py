@@ -2,29 +2,37 @@ from flask import jsonify
 
 from app import flask_app
 
+ok = 200
+created = 201
+
 
 class ITPError(Exception):
     pass
 
 
 class ITPAuthError(ITPError):
-    code = 403
-    description = "Authentication Error"
+    code = 401
+    description = "Unauthorized"
 
 
 class ITPForbiddenError(ITPError):
-    code = 404
+    code = 403
     description = "Request forbidden Error"
 
 
-class ITPUpdateError(ITPError):
-    code = 402 # TODO: set code for wrong arguments
+class ITPInvalidError(ITPError):
+    code = 400
     description = "Update Error"
 
 
 class ITPNotFound(ITPError):
-    code = 401
+    code = 404
     description = "Not found error"
+
+
+class ITPNotModified(ITPError):
+    code = 304
+    description = "Not modified session"
 
 
 @flask_app.errorhandler(ITPError)

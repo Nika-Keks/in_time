@@ -17,19 +17,31 @@ class OrderStatus(Enum):
     def list(cls):
         return list(map(lambda c: c.value[0], cls))
 
+    @classmethod
+    def restaurant_options(cls):
+        return [status for status in cls.list() if status != "opened"]
+
+    @classmethod
+    def client_options(cls):
+        return ["cancelled"]
+
 
 class Order(ModelBase):
     __tablename__ = "order"
+
+    serialize_only = (*ModelBase.serialize_only, "id", "restaurant_id", "card_id", "status", "opened_time",
+                      "cooked_time", "closed_time")
+
     id = db.Column(Integer, primary_key=True)
     card_id = db.Column(Integer, nullable=False)
     restaurant_id = db.Column(Integer, nullable=False)
     status = db.Column(String(100), nullable=False, default=OrderStatus.opened.value[0])
     opened_time = db.Column(DateTime, default=datetime.datetime.utcnow())
-    cooked_time = db.Column(DateTime, nullable=False)
-    closed_time = db.Column(DateTime, nullable=False)
+    cooked_time = db.Column(DateTime)
+    closed_time = db.Column(DateTime)
 
     @classmethod
-    def validate_update(cls, **attributes):
+    def validate_update(cls, order_id, **attributes):
         if 'restaurant_id' in attributes or 'card_id' in attributes or 'opened_time' in attributes or \
                 'cooked_time' in attributes or 'closed_time' in attributes:
             raise ValueError("Unupdatable fields")
@@ -39,20 +51,22 @@ class Order(ModelBase):
         if attributes['status'] not in OrderStatus.list():
             raise ValueError("Unsupported status")
 
-        if OrderStatus[attributes['status']].value[1] < OrderStatus[cls.status].value[1]:
+        obj = Order.query.filter_by(id=order_id).first()
+        if OrderStatus[attributes['status']].value[1] < OrderStatus[obj.status].value[1]:
             raise ValueError("Could not set status that is prevent current status")
 
     @classmethod
-    def update(cls, **attributes):
+    def update(cls, order_id, **attributes):
         if 'status' not in attributes:
             return
+        obj = Order.query.filter_by(id=order_id).first()
         status = OrderStatus[attributes['status']]
         if status == OrderStatus.opened:
-            cls.opened_time = datetime.datetime.utcnow()
-        if status.name == OrderStatus.cooked:
-            cls.cooked_time = datetime.datetime.utcnow()
-        if status.name == OrderStatus.closed or status.name == OrderStatus.cancelled:
-            cls.closed_time = datetime.datetime.utcnow()
+            obj.opened_time = datetime.datetime.utcnow()
+        if status == OrderStatus.cooked:
+            obj.cooked_time = datetime.datetime.utcnow()
+        if status == OrderStatus.closed or status == OrderStatus.cancelled:
+            obj.closed_time = datetime.datetime.utcnow()
 
-        cls.status = attributes['status']
+        obj.status = attributes['status']
         db.session.commit()

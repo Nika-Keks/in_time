@@ -14,6 +14,7 @@ flask_app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("ITP_DB_URI", defau
 flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 flask_app.secret_key = os.environ.get("ITP_SECRET_KEY", default="super secret key")
 flask_app.config['SESSION_TYPE'] = 'filesystem'
+flask_app.config['PROPAGATE_EXCEPTIONS'] = True
 
 db = SQLAlchemy(flask_app)
 migrate = Migrate(flask_app, db)
@@ -21,3 +22,4 @@ login_manager = LoginManager(flask_app)
 api = Api(flask_app)
 
 from app import routes, models
+from app.utils.exceptions import handle_exception

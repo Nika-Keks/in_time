@@ -8,9 +8,12 @@ from app.models.model_base import ModelBase
 
 class User(ModelBase, UserMixin):
     __tablename__ = "user"
+
+    serialize_only = (*ModelBase.serialize_only, "id", "name", "email")
+
     id = db.Column(Integer, primary_key=True)
-    name = db.Column(String(120))
-    email = db.Column(String(120), unique=True)
+    name = db.Column(String(120), nullable=False)
+    email = db.Column(String(120), unique=True, nullable=False)
     password = db.Column(String(120), nullable=False)
 
     @classmethod
@@ -20,14 +23,15 @@ class User(ModelBase, UserMixin):
                 raise ValueError
 
     @classmethod
-    def update(cls, **attributes):
-        cls.name = attributes.get('name', default=cls.name)
+    def update(cls, user_id, **attributes):
+        obj = User.query.filter_by(id=user_id).first()
+        obj.name = attributes.get('name', obj.name)
         if 'password' in attributes:
-            cls.password = generate_password_hash(attributes['password'], method='sha256')
-        cls.email = attributes.get('email', default=cls.email)
+            obj.password = generate_password_hash(attributes['password'], method='sha256')
+        obj.email = attributes.get('email', obj.email)
+        db.session.commit()
 
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-
