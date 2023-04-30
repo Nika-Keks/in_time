@@ -7,9 +7,12 @@ from flask_restx.inputs import time
 
 from app import api
 from app.models.restaurant import Restaurant
+from app.routes.utils import pagination_args, get_pagination_args
 from app.utils.exceptions import ITPInvalidError, ITPForbiddenError, ok
 
 ns = api.namespace('Restaurant', description='Operations with existed restaurants')
+
+get_args = pagination_args.copy()
 
 update_args = reqparse.RequestParser()
 default_open = datetime.time(9, 0, 0).isoformat()
@@ -56,9 +59,12 @@ class RestaurantById(Resource):
 # TODO: add filtering
 @ns.route('/restaurants/')
 class Restaurants(Resource):
+    @ns.expect(get_args)
     def get(self):
         if not current_user.is_authenticated or current_user.is_anonymous:
             raise ITPForbiddenError()
 
-        data = Restaurant.query.all()
+        page, per_page = get_pagination_args(request.args)
+
+        data = Restaurant.query.paginate(page=page, max_per_page=per_page, error_out=False).items
         return {"count": len(data), "items": [d.to_dict() for d in data]}, ok

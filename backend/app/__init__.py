@@ -15,6 +15,7 @@ flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 flask_app.secret_key = os.environ.get("ITP_SECRET_KEY", default="super secret key")
 flask_app.config['SESSION_TYPE'] = 'filesystem'
 flask_app.config['PROPAGATE_EXCEPTIONS'] = True
+flask_app.config['ITP_ROWS_PER_PAGE'] = os.environ.get("ITP_ROWS_PER_PAGE", default=100)
 
 db = SQLAlchemy(flask_app)
 migrate = Migrate(flask_app, db)

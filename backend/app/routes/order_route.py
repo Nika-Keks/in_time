@@ -10,6 +10,7 @@ from app.models.dish import Dish
 from app.models.order import Order, OrderStatus
 from app.models.order_dishes import OrderDishes
 from app.models.restaurant import Restaurant
+from app.routes.utils import get_pagination_args, pagination_args
 from app.utils.exceptions import ITPForbiddenError, ITPInvalidError, ok, created
 
 
@@ -35,6 +36,7 @@ input_dish = api.model('dish', {
 input_args = reqparse.RequestParser()
 input_args.add_argument('dishes', type=input_dish, help='List of order dishes', required=True, action='append', default=[])
 
+get_args = pagination_args.copy()
 
 update_rest_args = reqparse.RequestParser()
 update_rest_args.add_argument('status', type=String(enum=OrderStatus.restaurant_options()), help='New order status')
@@ -46,11 +48,15 @@ update_user_args.add_argument('status', type=String(enum=OrderStatus.client_opti
 @user_ns.route('/orders/user')
 class UserOrder(Resource):
     # TODO: add filtering
+    @user_ns.expect(get_args)
     def get(self):
         if not current_user.is_authenticated or current_user.is_anonymous:
             raise ITPForbiddenError()
+        page, per_page = get_pagination_args(request.args)
+
         # TODO: add getting by card id after creating Card model
-        data = Order.query.filter_by(card_id=current_user.id).all()
+        data = Order.query.filter_by(card_id=current_user.id).paginate(page=page, max_per_page=per_page,
+                                                                       error_out=False).items
         return {"count": len(data), "items": [d.to_dict() for d in data]}, ok
 
     @user_ns.expect([input_dish])
@@ -111,6 +117,7 @@ class UserOrderId(Resource):
 
 @rest_ns.route('/orders/restaurant/<int:rest_id>')
 class RestaurantOrder(Resource):
+    @rest_ns.expect(get_args)
     def get(self, rest_id):
         if not current_user.is_authenticated or current_user.is_anonymous:
             raise ITPForbiddenError()
@@ -119,7 +126,9 @@ class RestaurantOrder(Resource):
         if restaurant is None:
             raise ITPForbiddenError()
 
-        data = Order.query.filter_by(restaurant_id=rest_id).all()
+        page, per_page = get_pagination_args(request.args)
+        data = Order.query.filter_by(restaurant_id=rest_id).paginate(page=page, max_per_page=per_page,
+                                                                     error_out=False).items
         return {"count": len(data), "items": [d.to_dict() for d in data]}, ok
 
 
