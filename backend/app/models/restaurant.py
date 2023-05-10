@@ -1,22 +1,24 @@
 import datetime
+import os
 
 from sqlalchemy import JSON, String, Text, Time, Integer
 
-from app import db
+from app import db, flask_app
 from app.models.model_base import ModelBase
 
 
 class Restaurant(ModelBase):
     __tablename__ = "restaurant"
 
-    serialize_only = (*ModelBase.serialize_only, "id", "user_id", "position", "description", "phone", "wday_opening",
-                      "wday_closing", "wend_opening", "wend_closing")
+    serialize_only = (*ModelBase.serialize_only, "id", "user_id", "position", "description", "phone", "image_path",
+                      "wday_opening", "wday_closing", "wend_opening", "wend_closing")
 
     id = db.Column(Integer, primary_key=True)
     user_id = db.Column(Integer, nullable=False)
     position = db.Column(JSON, nullable=False)
     description = db.Column(Text)
     phone = db.Column(String(120), unique=True, nullable=False)
+    image_path = db.Column(String(200))
 
     wday_opening = db.Column(Time, nullable=False)
     wday_closing = db.Column(Time, nullable=False)
@@ -32,11 +34,19 @@ class Restaurant(ModelBase):
                                 attributes.get('wend_closing', obj.wend_closing))
         if 'phone' in attributes and attributes['phone'] != obj.phone and \
             cls.query.filter(phone=attributes['phone']).first() is not None:
-            raise ValueError("")
+            raise ValueError(f"Restaurant with phone number {attributes['phone']} already exist")
 
     @classmethod
     def update(cls, rest_id, **attributes):
         obj = Restaurant.query.filter_by(id=rest_id).first()
+
+        if 'image_path' in attributes:
+            if obj.image_path:
+                old_path = os.path.abspath(os.path.join(flask_app.config['UPLOAD_FOLDER'], obj.image_path))
+                if os.path.exists(old_path):
+                    os.remove(old_path)
+            obj.image_path = attributes['image_path']
+
         obj.phone = attributes.get('phone', obj.phone)
         obj.position = attributes.get('position', obj.position)
         obj.description = attributes.get('description', obj.description)

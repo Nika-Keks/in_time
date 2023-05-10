@@ -1,8 +1,9 @@
+import os
 from enum import Enum
 
 from sqlalchemy import String, Text, Integer
 
-from app import db
+from app import db, flask_app
 from app.models.model_base import ModelBase
 from app.utils.exceptions import ITPInvalidError
 
@@ -20,7 +21,8 @@ class DishStatus(Enum):
 class Dish(ModelBase):
     __tablename__ = "dish"
 
-    serialize_only = (*ModelBase.serialize_only, "id", "restaurant_id", "name", "description", "status", "price")
+    serialize_only = (*ModelBase.serialize_only, "id", "restaurant_id", "name", "description", "status", "price",
+                      "image_path")
 
     id = db.Column(Integer, primary_key=True)
     restaurant_id = db.Column(Integer, nullable=False)
@@ -28,6 +30,7 @@ class Dish(ModelBase):
     description = db.Column(Text)
     status = db.Column(String(100), nullable=False)
     price = db.Column(Integer, nullable=False)
+    image_path = db.Column(String(200))
 
     @classmethod
     def create(cls, **attributes):
@@ -48,6 +51,13 @@ class Dish(ModelBase):
             if attributes['status'] not in DishStatus.list():
                 raise ITPInvalidError()
             obj.status = attributes['status']
+
+        if 'image_path' in attributes:
+            if obj.image_path:
+                old_path = os.path.abspath(os.path.join(flask_app.config['UPLOAD_FOLDER'], obj.image_path))
+                if os.path.exists(old_path):
+                    os.remove(old_path)
+            obj.image_path = attributes['image_path']
 
         obj.name = attributes.get('name', obj.name)
         obj.description = attributes.get('description', obj.description)

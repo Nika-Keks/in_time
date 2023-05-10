@@ -16,6 +16,8 @@ flask_app.secret_key = os.environ.get("ITP_SECRET_KEY", default="super secret ke
 flask_app.config['SESSION_TYPE'] = 'filesystem'
 flask_app.config['PROPAGATE_EXCEPTIONS'] = True
 flask_app.config['ITP_ROWS_PER_PAGE'] = os.environ.get("ITP_ROWS_PER_PAGE", default=100)
+flask_app.config['MAX_CONTENT_LENGTH'] = os.environ.get("ITP_MAX_FILES_SIZE", default=1*1024*1024)
+flask_app.config['UPLOAD_FOLDER'] = os.environ.get("ITP_UPLOAD_FOLDER", default="data/intime/files")
 
 db = SQLAlchemy(flask_app)
 migrate = Migrate(flask_app, db)
