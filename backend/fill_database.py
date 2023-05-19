@@ -36,8 +36,8 @@ def create_restaurant(user: User, restaurant_info: dict) -> Restaurant:
         try:
             ext = '.' + rest_image_path.split('.')[-1]
             file_path = generate_file_path("r", new_rest.id) + ext
-            save_path = os.path.abspath(os.path.join(flask_app.config['UPLOAD_FOLDER'], file_path))
 
+            save_path = os.path.abspath(os.path.join(flask_app.config['UPLOAD_FOLDER'], file_path))
             os.makedirs(flask_app.config['UPLOAD_FOLDER'], exist_ok=True)
             source_path = os.path.join(IMAGES_DIR, rest_image_path)
             shutil.copy(source_path, save_path)
@@ -60,8 +60,8 @@ def create_dish(restaurant: Restaurant, dish_info: dict) -> Dish:
         try:
             ext = '.' + dish_image_path.split('.')[-1]
             file_path = generate_file_path("d", new_dish.id) + ext
-            save_path = os.path.abspath(os.path.join(flask_app.config['UPLOAD_FOLDER'], file_path))
 
+            save_path = os.path.abspath(os.path.join(flask_app.config['UPLOAD_FOLDER'], file_path))
             os.makedirs(flask_app.config['UPLOAD_FOLDER'], exist_ok=True)
             source_path = os.path.join(IMAGES_DIR, dish_image_path)
             shutil.copy(source_path, save_path)

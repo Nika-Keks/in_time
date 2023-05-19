@@ -1,5 +1,5 @@
 FROM python:3.6.9-alpine
-WORKDIR /code
+WORKDIR /code/intime
 
 RUN apk --update --upgrade add --no-cache  gcc musl-dev jpeg-dev zlib-dev libffi-dev cairo-dev pango-dev gdk-pixbuf-dev
 

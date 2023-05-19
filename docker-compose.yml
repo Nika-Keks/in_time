@@ -38,6 +38,9 @@ services:
       ITP_DB_URI: postgresql://admin:qwer@db/postgres
       ITP_DB: intime
       ITP_SECRET_KEY: superkey
+      ITP_INIT_DB_DEMO: 1
+    volumes:
+      - ./data:/code/data
 
 networks:
   itp:
@@ -45,3 +48,4 @@ networks:
 
 volumes:
   db: {}
+  backend: {}
