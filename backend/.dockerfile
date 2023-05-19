@@ -8,4 +8,5 @@ COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 EXPOSE 5000
 COPY . .
+RUN sh ./setup.sh
 CMD [ "python", "-m", "app.intime" ]

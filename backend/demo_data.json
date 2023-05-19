@@ -1,0 +1,284 @@
+{
+  "restaurants": [
+    {
+      "user_info": {
+        "name": "Smash Burgers",
+        "email": "smash_burgers@rest.intime",
+        "password": "qwerty"
+      },
+      "rest_info": {
+        "position": {},
+        "description": "Первые настоящие SMASH бургеры в Петербурге",
+        "phone": "88001001010",
+        "image_path": "data/restaurants/smash_burgers.jpg",
+        "wday_opening": "09:00:00",
+        "wday_closing": "18:00:00",
+        "wend_opening": "09:00:00",
+        "wend_closing": "18:00:00"
+      },
+      "dishes": [
+        {
+          "name": "Двойной бургер с голубым сыром и беконом Smash",
+          "description": "2 x 60г говядины, луковый джем, айсберг, майонез с беконом, горгонзола, чеддер, хрустящий бекон",
+          "status": "unavailable",
+          "price": 300,
+          "image_path": "data/dishes/smash_burgers_DoubleBlueChese&BaconSmash.jpeg"
+        },
+        {
+          "name": "Двойной класический бургер Smash",
+          "description": "2 x 60г говядины, чеддер, огурец, лук, кетчуп, горчица",
+          "status": "active",
+          "price": 300,
+          "image_path": "data/dishes/smash_burgers_DoubleClassicSmash.jpeg"
+        },
+        {
+          "name": "2x2 Класический бургер Smash",
+          "description": "4 x 60г говядины, чеддер, огурец, лук, кетчуп, горчица",
+          "status": "active",
+          "price": 450,
+          "image_path": "data/dishes/smash_burgers_DoubleDoubleClassicSmash.jpeg"
+        },
+        {
+          "name": "Двойной BBQ халапеньо бургер Smash",
+          "description": "2 x 60г говядина, чеддер, хрустящий лук, перец халапеньо, соус барбекю",
+          "status": "active",
+          "price": 300,
+          "image_path": "data/dishes/smash_burgers_DoubleBBQJalapenoSmash.jpeg"
+        },
+        {
+          "name": "2x2 BBQ халапеньо бургер Smash",
+          "description": "4 x 60г говядины, чеддер, хрустящий лук, перец халапеньо, соус барбекю",
+          "status": "temp unavailable",
+          "price": 450,
+          "image_path": "data/dishes/smash_burgers_DoubleDoubleBBQJalapenoSmash.jpeg"
+        }
+      ]
+    },
+    {
+      "user_info": {
+        "name": "Gyros в городе",
+        "email": "gyros_v_gorode@rest.intime",
+        "password": "qwerty"
+      },
+      "rest_info": {
+        "position": {},
+        "description": "Гирос по оригинальному греческому рецепту",
+        "phone": "88001001020",
+        "image_path": "data/restaurants/gyros_v_gorode.jpeg",
+        "wday_opening": "09:00:00",
+        "wday_closing": "18:00:00",
+        "wend_opening": "09:00:00",
+        "wend_closing": "18:00:00"
+      },
+      "dishes": [
+        {
+          "name": "Гирос классический",
+          "description": "Мясо, пита, картофель фри, салат",
+          "status": "active",
+          "price": 250,
+          "image_path": "data/dishes/gyros_v_gorode_GirosClassic.jpeg"
+        },
+        {
+          "name": "Гирос на тарелке",
+          "description": "Мясо, пита, картофель фри, салат",
+          "status": "active",
+          "price": 300,
+          "image_path": "data/dishes/gyros_v_gorode_GirosPorcija.jpeg"
+        },
+        {
+          "name": "Гирос вегатерианский",
+          "description": "Пита, картофель фри, салат",
+          "status": "active",
+          "price": 170,
+          "image_path": "data/dishes/gyros_v_gorode_GirosVegetarian.jpeg"
+        },
+        {
+          "name": "Пита",
+          "description": "",
+          "status": "active",
+          "price": 50,
+          "image_path": "data/dishes/gyros_v_gorode_Pita.jpeg"
+        },
+        {
+          "name": "Картофель фри",
+          "description": "200г, подается с кетчупом",
+          "status": "active",
+          "price": 170,
+          "image_path": "data/dishes/gyros_v_gorode_frenchfri.jpeg"
+        },
+        {
+          "name": "Coca cola",
+          "description": "0.33 мл",
+          "status": "active",
+          "price": 120,
+          "image_path": "data/dishes/gyros_v_gorode_CocaCola.jpeg"
+        },
+        {
+          "name": "Coca cola zero",
+          "description": "0.33 мл",
+          "status": "unavailable",
+          "price": 120,
+          "image_path": "data/dishes/gyros_v_gorode_CocaColaZero.jpeg"
+        }
+      ]
+    },
+    {
+      "user_info": {
+        "name": "Wok Republic",
+        "email": "wok_republic@rest.intime",
+        "password": "qwerty"
+      },
+      "rest_info": {
+        "position": {},
+        "description": "Азиатский фаст-фуд",
+        "phone": "88001001030",
+        "image_path": "data/restaurants/wok_republic.jpeg",
+        "wday_opening": "09:00:00",
+        "wday_closing": "18:00:00",
+        "wend_opening": "09:00:00",
+        "wend_closing": "18:00:00"
+      },
+      "dishes": [
+        {
+          "name": "Тайская лапша с курицей",
+          "description": "Рисовая лапша, курица, яйцо, капуста, морковь, лук, зеленый лук и жареный арахис",
+          "status": "active",
+          "price": 350,
+          "image_path": "data/dishes/wok_republic_PadThaiNoodlesChicken.jpeg"
+        },
+        {
+          "name": "Тайская лапша с креветкой",
+          "description": "Рисовая лапша, гамбори, яйцо, капуста, морковь, лук, зеленый лук и жареный арахис",
+          "status": "active",
+          "price": 450,
+          "image_path": "data/dishes/wok_republic_PadThaiNoodlesShrimps.jpeg"
+        },
+        {
+          "name": "Лапша карри",
+          "description": "Лапша, курица в кокосово-соусе карри, капуста, грибы, шпинат и стручковая фасоль",
+          "status": "active",
+          "price": 350,
+          "image_path": "data/dishes/wok_republic_CurryNoodles.jpeg"
+        },
+        {
+          "name": "Coca Cola 1л",
+          "description": "",
+          "status": "active",
+          "price": 200,
+          "image_path": "data/dishes/wok_republic_CocaCola.jpeg"
+        },
+        {
+          "name": "Рис с рубленой говядиной",
+          "description": "Жареный рис, говяжий фарш в сладком соевом соусе, капуста, лук, морковь, зеленый лук и баклажан",
+          "status": "active",
+          "price": 300,
+          "image_path": "data/dishes/wok_republic_ChoppedBeefRice.jpeg"
+        }
+      ]
+    },
+    {
+      "user_info": {
+        "name": "Ресторан Апрель",
+        "email": "april_rest@rest.intime",
+        "password": "qwerty"
+      },
+      "rest_info": {
+        "position": {},
+        "description": "",
+        "phone": "88001001040",
+        "image_path": "data/restaurants/april_rest.jpeg",
+        "wday_opening": "09:00:00",
+        "wday_closing": "18:00:00",
+        "wend_opening": "09:00:00",
+        "wend_closing": "18:00:00"
+      },
+      "dishes": [
+        {
+          "name": "Греческий салат",
+          "description": "Огурец, помидор, перец, лук, фета, оливки, орегано",
+          "status": "temp unavailable",
+          "price": 500,
+          "image_path": "data/dishes/april_rest_GreekSalad.jpeg"
+        },
+        {
+          "name": "Салат Цезарь",
+          "description": "Салат Айсберг, курица, панчетта, гренки, заправка, пармезан",
+          "status": "active",
+          "price": 630,
+          "image_path": "data/dishes/april_rest_CezarSalad.jpeg"
+        },
+        {
+          "name": "Куриное филе",
+          "description": "Куриное филе с сезонными овощами гриль",
+          "status": "active",
+          "price": 750,
+          "image_path": "data/dishes/april_rest_ChickenFile.jpeg"
+        },
+        {
+          "name": "Свиные ребра в соусе барбекю",
+          "description": "",
+          "status": "active",
+          "price": 800,
+          "image_path": "data/dishes/april_rest_RebarchauBBQSouse.jpeg"
+        },
+        {
+          "name": "Фирменная курица \"Апрель\"",
+          "description": "Куриное филе, фаршированное ветчиной и моцареллой, соус горгонзола, хрустящий приправленный картофель",
+          "status": "active",
+          "price": 850,
+          "image_path": "data/dishes/april_rest_AprilChicken.jpeg"
+        }
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "user_info": {
+        "name": "client1",
+        "email": "client1@personal.mail",
+        "password": "qwerty"
+      },
+      "orders": [
+        {
+          "restaurant_email": "wok_republic@rest.intime",
+          "status": "closed",
+          "opened_time": "2023-05-19 10:05:57.000000",
+          "cooked_time": "2023-05-19 10:25:57.000000",
+          "closed_time": "2023-05-19 10:35:02.000000",
+          "dishes": [
+            {
+              "dish_idx": 0,
+              "count": 1
+            },
+            {
+              "dish_idx": 3,
+              "count": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "user_info": {
+        "name": "client2",
+        "email": "client2@personal.mail",
+        "password": "qwerty"
+      },
+      "orders": [
+        {
+          "restaurant_email": "smash_burgers@rest.intime",
+          "status": "cancelled",
+          "opened_time": "2023-05-19 10:05:57.000000",
+          "cooked_time": null,
+          "closed_time": "2023-05-19 10:35:57.000000",
+          "dishes": [
+            {
+              "dish_idx": 0,
+              "count": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
