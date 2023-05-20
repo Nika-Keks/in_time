@@ -51,7 +51,7 @@ class DishByRestaurant(Resource):
         Restaurant.query.filter_by(id=rest_id).first_or_404(description=f"Restaurant with id {rest_id} was not found")
 
         page, per_page = get_pagination_args(request.args)
-        dishes = Dish.query.filter_by(restaurant_id=rest_id).paginate(page=page, max_per_page=per_page, error_out=False)
+        dishes = Dish.query.filter_by(restaurant_id=rest_id).paginate(page=page, max_per_page=per_page, error_out=False).items
         return {"count": len(dishes), "items": [d.to_dict() for d in dishes]}, ok
 
     @ns.doc("Create new dish")
