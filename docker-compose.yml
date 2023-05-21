@@ -24,6 +24,22 @@ services:
     networks:
       - itp
 
+  elasticsearch:
+    image: elasticsearch:7.13.3
+    ports:
+      - 9200:9200
+    expose:
+      - 9200
+    networks:
+      - itp
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - ./es/db:/usr/share/elasticsearch/data
+      - ./es/logs:/usr/share/elasticsearch/logs
+      - ./es/repo:/usr/share/elasticsearch/repo
+
   backend:
     build:
       context: backend/
@@ -34,6 +50,7 @@ services:
       - itp
     depends_on:
       - db
+      - elasticsearch
     environment:
       ITP_DB_URI: postgresql://admin:qwer@db/postgres
       ITP_DB: intime
@@ -49,3 +66,4 @@ networks:
 volumes:
   db: {}
   backend: {}
+  elasticsearch: {}

@@ -6,6 +6,7 @@ from sqlalchemy import String, Text, Integer
 from app import db, flask_app
 from app.models.model_base import ModelBase
 from app.utils.exceptions import ITPInvalidError
+from app.utils.mixins import SearchableMixin
 
 
 class DishStatus(Enum):
@@ -18,8 +19,9 @@ class DishStatus(Enum):
         return list(map(lambda c: c.value, cls))
 
 
-class Dish(ModelBase):
+class Dish(ModelBase, SearchableMixin):
     __tablename__ = "dish"
+    __searchable__ = ["name", "description"]
 
     serialize_only = (*ModelBase.serialize_only, "id", "restaurant_id", "name", "description", "status", "price",
                       "image_path")

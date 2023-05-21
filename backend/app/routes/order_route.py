@@ -10,7 +10,7 @@ from app.models.dish import Dish
 from app.models.order import Order, OrderStatus
 from app.models.order_dishes import OrderDishes
 from app.models.restaurant import Restaurant
-from app.routes.utils import get_pagination_args, pagination_args
+from app.routes.utils import get_pagination_args, pagination_args, get_filter_order_query, filter_args
 from app.utils.exceptions import ITPForbiddenError, ITPInvalidError, ok, created
 
 
@@ -37,6 +37,8 @@ input_args = reqparse.RequestParser()
 input_args.add_argument('dishes', type=input_dish, help='List of order dishes', required=True, action='append', default=[])
 
 get_args = pagination_args.copy()
+for arg in filter_args.args:
+    get_args.add_argument(arg)
 
 update_rest_args = reqparse.RequestParser()
 update_rest_args.add_argument('status', type=String(enum=OrderStatus.restaurant_options()), help='New order status')
@@ -47,16 +49,16 @@ update_user_args.add_argument('status', type=String(enum=OrderStatus.client_opti
 
 @user_ns.route('/orders/user')
 class UserOrder(Resource):
-    # TODO: add filtering
     @user_ns.expect(get_args)
     def get(self):
         if not current_user.is_authenticated or current_user.is_anonymous:
             raise ITPForbiddenError()
         page, per_page = get_pagination_args(request.args)
+        query = get_filter_order_query(request.args, Order)
 
         # TODO: add getting by card id after creating Card model
-        data = Order.query.filter_by(card_id=current_user.id).paginate(page=page, max_per_page=per_page,
-                                                                       error_out=False).items
+        data = query.filter_by(card_id=current_user.id).paginate(page=page, max_per_page=per_page,
+                                                                 error_out=False).items
         return {"count": len(data), "items": [d.to_dict() for d in data]}, ok
 
     @user_ns.expect([input_dish])
@@ -127,8 +129,9 @@ class RestaurantOrder(Resource):
             raise ITPForbiddenError()
 
         page, per_page = get_pagination_args(request.args)
-        data = Order.query.filter_by(restaurant_id=rest_id).paginate(page=page, max_per_page=per_page,
-                                                                     error_out=False).items
+        query = get_filter_order_query(request.args, Order)
+        data = query.filter_by(restaurant_id=rest_id).paginate(page=page, max_per_page=per_page,
+                                                               error_out=False).items
         return {"count": len(data), "items": [d.to_dict() for d in data]}, ok
 
 

@@ -7,12 +7,18 @@ from flask_restx.inputs import time
 
 from app import api
 from app.models.restaurant import Restaurant
-from app.routes.utils import pagination_args, get_pagination_args
+from app.routes.utils import pagination_args, get_pagination_args, filter_args, get_filter_order_query
 from app.utils.exceptions import ITPInvalidError, ITPForbiddenError, ok
 
 ns = api.namespace('Restaurant', description='Operations with existed restaurants')
 
 get_args = pagination_args.copy()
+for arg in filter_args.args:
+    get_args.add_argument(arg)
+
+search_args = pagination_args.copy()
+search_args.add_argument('search_string', type=str, help='String to find by full-text search', required=True)
+
 
 update_args = reqparse.RequestParser()
 default_open = datetime.time(9, 0, 0).isoformat()
@@ -56,7 +62,6 @@ class RestaurantById(Resource):
         return restaurant.to_dict(), ok
 
 
-# TODO: add filtering
 @ns.route('/restaurants/')
 class Restaurants(Resource):
     @ns.expect(get_args)
@@ -65,6 +70,19 @@ class Restaurants(Resource):
             raise ITPForbiddenError()
 
         page, per_page = get_pagination_args(request.args)
-
-        data = Restaurant.query.paginate(page=page, max_per_page=per_page, error_out=False).items
+        query = get_filter_order_query(request.args, Restaurant)
+        data = query.paginate(page=page, max_per_page=per_page, error_out=False).items
         return {"count": len(data), "items": [d.to_dict() for d in data]}, ok
+
+
+@ns.route('/restaurants/search')
+class RestaurantSearch(Resource):
+    @ns.expect(search_args)
+    def get(self):
+        if not current_user.is_authenticated or current_user.is_anonymous:
+            raise ITPForbiddenError()
+
+        page, per_page = get_pagination_args(request.args)
+        data, total = Restaurant.search(request.args["search_string"], page=page, per_page=per_page)
+        items = [d.to_dict() for d in data.all()]
+        return {"count": len(items), "total": total, "items": items}, ok

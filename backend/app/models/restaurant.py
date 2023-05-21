@@ -2,13 +2,17 @@ import datetime
 import os
 
 from sqlalchemy import JSON, String, Text, Time, Integer
+from sqlalchemy.ext.hybrid import hybrid_property
 
 from app import db, flask_app
 from app.models.model_base import ModelBase
+from app.utils.mixins import SearchableMixin
+from app.models.user import User
 
 
-class Restaurant(ModelBase):
+class Restaurant(ModelBase, SearchableMixin):
     __tablename__ = "restaurant"
+    __searchable__ = ["user_name", "description"]
 
     serialize_only = (*ModelBase.serialize_only, "id", "user_id", "position", "description", "phone", "image_path",
                       "wday_opening", "wday_closing", "wend_opening", "wend_closing")
@@ -24,6 +28,11 @@ class Restaurant(ModelBase):
     wday_closing = db.Column(Time, nullable=False)
     wend_opening = db.Column(Time)
     wend_closing = db.Column(Time)
+
+    @hybrid_property
+    def user_name(self):
+        user = User.query.filter_by(id=self.user_id).first()
+        return user.name
 
     @classmethod
     def validate_update(cls, rest_id, **attributes):
