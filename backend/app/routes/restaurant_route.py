@@ -5,10 +5,12 @@ from flask_login import current_user
 from flask_restx import Resource, reqparse
 from flask_restx.inputs import time
 
-from app import api
+from app import api, db, flask_app
 from app.models.restaurant import Restaurant
 from app.routes.utils import pagination_args, get_pagination_args, filter_args, get_filter_order_query
-from app.utils.exceptions import ITPInvalidError, ITPForbiddenError, ok
+from app.utils.exceptions import ITPInvalidError, ITPForbiddenError, ITPNotFound, ok
+from app.models.user import User
+
 
 ns = api.namespace('Restaurant', description='Operations with existed restaurants')
 
@@ -36,6 +38,13 @@ update_args.add_argument('wend_closing', type=time, help='New restaurant weekend
                          default=default_close)
 
 
+add_args = update_args.copy()
+add_args.add_argument('user_id', type=int, help="Restaurant owner's ID", required=True)
+add_args.replace_argument('phone', type=str, help="New restaurant owner's phone", required=True)
+add_args.replace_argument('description', type=str, help='New restaurant description', required=True)
+add_args.replace_argument('position', type=str, help='New restaurant position', required=True)
+
+
 @ns.route('/restaurants/<int:rest_id>')
 class RestaurantById(Resource):
     def get(self, rest_id):
@@ -60,6 +69,37 @@ class RestaurantById(Resource):
 
         Restaurant.update(rest_id, **request.args)
         return restaurant.to_dict(), ok
+
+
+# @ns.param('description', type=str, help='Description', required=True)
+# @ns.param('user_id', type=int, help='User ID', required=True)
+# @ns.param('position', type=str, help='position', required=True)
+# @ns.param('phone', type=str, help="Restaurant owner's phone", required=True)
+# @ns.param('wday_opening', type=time, help='New restaurant working day opening time',
+#           default=default_open)
+# @ns.param('wday_closing', type=time, help='New restaurant working day closing time',
+#           default=default_close)
+
+@ns.route('/restaurants/add_new')
+class RestaurantAdd(Resource):
+    @ns.expect(add_args)
+    def post(self):
+        if not current_user.is_authenticated or current_user.is_anonymous:
+            raise ITPForbiddenError()
+        if current_user.email != "super_admin@gmail.com":
+            raise ITPForbiddenError("You must be a super admin to perform this action!")
+        user_id = request.args.get('user_id')
+        if User.query.filter_by(id=user_id).first() is None:
+            raise ITPNotFound(f"Restaurant owner with id='{user_id}' is not exist")
+
+        new_restaurant = Restaurant(user_id=user_id,
+                                    position=request.args.get('position'),
+                                    description=request.args.get('description'),
+                                    phone=request.args.get('phone'),
+                                    wday_opening=request.args.get('wday_opening'),
+                                    wday_closing=request.args.get('wday_closing'))
+        db.session.add(new_restaurant)
+        db.session.commit()
 
 
 @ns.route('/restaurants/')
